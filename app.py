@@ -19,6 +19,7 @@ def qrcode():
 def get_mrz():
     try:
         data = request.json
+        print(data)
         return Response(response=mrz.generate_mrz_de_id(data),
                         status=200)
     except Exception as e:
