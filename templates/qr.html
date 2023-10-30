@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+</head>
+<style>
+    #err {color: red;}
+    div {
+        display: flex;
+        flex-direction: column;
+        max-width: 600px;
+    }
+
+    button {
+        margin-top: 20px;
+        border: none;
+        background-color: #C1FECB;
+        color: #000;
+        border-radius: 16px;
+        padding: 12px;
+        cursor: pointer;
+    }
+
+    textarea {
+        resize: none;
+
+    }
+</style>
+
+<body>
+    <div>
+        <label>Наименование организации</label>
+        <input type="text" name="name">
+
+        <label>Наименование банка</label>
+        <input type="text" name="bank">
+
+        <label>Рассчётный счёт</label>
+        <input type="number" name="rs">
+
+        <label>БИК</label>
+        <input type="number" name="bic">
+
+        <label>Кор. Счёт</label>
+        <input type="number" name="ks">
+
+        <label>Инн</label>
+        <input type="number" name="inn">
+
+        <label>КПП</label>
+        <input type="number" name="kpp">
+
+        <label>ФИО</label>
+        <input type="text" name="fio">
+
+        <label>Адрес</label>
+        <input type="text" name="addres">
+
+        <label>Лицевой счёт</label>
+        <input type="number" name="ls">
+
+        <label>Назначение платежа</label>
+        <input type="text" name="purpose">
+
+        <label>Сумма</label>
+        <input type="number" name="summ">
+
+        <button onclick="clickedBtn()">Сгенерировать QR</button>
+        <div id="err"></div>
+    </div>
+    <div style="margin-top: 20px;">
+        <img id='qr_code' src="/asd" alt="">
+        <textarea readonly name="code_data" cols="20" rows="10"></textarea>
+    </div>
+</body>
+
+<script>
+    let errField = document.querySelector('#err')
+    function get_data() {
+        let data = {}
+        let inputs = document.querySelectorAll('input')
+        inputs.forEach((element) => {
+            data[element.name] = element.value
+        })
+        return data
+    };
+    function clickedBtn() {
+        errField.innerHTML = ''
+        let data = this.get_data()
+        this.axios.post('/get_qr', data = data)
+            .then((resp) => {
+                document.getElementById('qr_code').src = 'data:image/png;base64,' + resp.data.img
+                document.getElementsByName('code_data')[0].innerHTML = resp.data.code_data
+            }
+            )
+            .catch((err) => { this.showErr(err.response.data) })
+    }
+    function showErr(text) { errField.innerHTML = 'Ошибка: ' + text }
+</script>
+
+</html>

@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+</head>
+<style>
+    #err {color: red;}
+    div{display: flex; flex-direction: column;max-width: 400px;}
+    button{
+        margin-top: 20px;
+        border: none;
+        background-color: #C1FECB;
+        color:#000;
+        border-radius: 16px;
+        padding: 12px;
+        cursor: pointer;
+    }
+    textarea{
+        resize: none;
+
+    }
+</style>
+<body>
+    <div>
+        <label>Фамилия</label>
+        <input type="text" name="surname">
+        <label>Имя</label>
+        <input type="text" name="given_name">
+        <label>Номер документа</label>
+        <input type="text" name="pass_num">
+        <label>Дата рождения</label>
+        <input type="date" name="date_b">
+        <label>Дата окончания действия</label>
+        <input type="date" name="date_exp">
+
+        <button onclick="clickedBtn()">Сгенерировать МРЗ</button>
+        <div id="err"></div>
+    </div>
+    <div style="margin-top: 20px;">
+        <textarea readonly name="mrz_code" cols="30" rows="10"></textarea>
+    </div>
+</body>
+
+<script>
+    let errField = document.querySelector('#err')
+    function get_data() {
+        let data = {}
+        let inputs = document.querySelectorAll('input')
+        inputs.forEach((element) => {
+            data[element.name] = element.value
+        })
+        return data
+    };
+    function clickedBtn(){
+        errField.innerHTML = ''
+        let data = this.get_data()
+        console.log(data)
+        this.axios.post('/get_mrz', data=data)
+        .then((resp) => {
+            console.log(resp)
+            document.getElementsByName('mrz_code')[0].innerHTML = resp.data
+        })
+        .catch((err) => { this.showErr(err.response.data) })
+        }
+        function showErr(text) { errField.innerHTML = 'Ошибка: ' + text }
+</script>
+</html>
